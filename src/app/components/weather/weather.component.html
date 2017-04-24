@@ -2,5 +2,5 @@
   weather works!
 </p>
 <ul>
-  <li *ngFor="let day of data">{{day.dt*1000 | date:'dd-MM-yyyy HH:mm'}} {{day.clouds.all}}</li>
+  <li *ngFor="let day of data">{{day.dt | date:'dd-MM-yyyy HH:mm'}} {{day.clouds.all}}</li>
 </ul>

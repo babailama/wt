@@ -18,6 +18,10 @@ export class WeatherDataService {
   }
   private extractData(res: Response) {
     const body = res.json();
+    console.log(typeof body.list);
+    for (const item of body.list) {
+      item.dt = item.dt * 1000;
+    }
     return body.list || { };
   }
   private handleError (error: Response | any) {
