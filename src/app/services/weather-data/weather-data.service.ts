@@ -8,17 +8,20 @@ import 'rxjs/add/operator/map';
 import { WeatherDataInteface } from '../../interfaces/weather-data.interface';
 @Injectable()
 export class WeatherDataService {
-  private dataUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=704147&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
+  private dataUrl: string;
+  //  'http://api.openweathermap.org/data/2.5/forecast?id=704147&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
   constructor(private http: Http) { }
 
-  getOData():  Observable<WeatherDataInteface[]> {
+  getOData(city : string):  Observable<WeatherDataInteface[]> {
+    this.dataUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' +
+                    city +
+                    '&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
     return this.http.get(this.dataUrl)
                     .map(this.extractData)
                     .catch(this.handleError);
   }
   private extractData(res: Response) {
     const body = res.json();
-    console.log(typeof body.list);
     for (const item of body.list) {
       item.dt = item.dt * 1000;
     }

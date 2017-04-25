@@ -14,7 +14,7 @@ export interface WeatherDataInteface {
   main: MainInerface;
   weather: WeatherInerface[];
   clouds: CloudsInerface;
-  winds: WindInerface;
+  wind: WindInerface;
   rain: RainInerface;
   snow: SnowInerface;
   dt_txt: string;
