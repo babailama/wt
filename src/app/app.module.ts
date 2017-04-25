@@ -5,11 +5,13 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { WeatherComponent } from './components/weather/weather.component';
+import { GmapComponent } from './components/gmap/gmap.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WeatherComponent
+    WeatherComponent,
+    GmapComponent
   ],
   imports: [
     BrowserModule,
