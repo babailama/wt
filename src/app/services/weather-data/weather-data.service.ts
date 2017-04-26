@@ -13,7 +13,7 @@ export class WeatherDataService {
   constructor(private http: Http) { }
 
   getOData(city : string):  Observable<WeatherDataInteface[]> {
-    this.dataUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' +
+    this.dataUrl = 'http://api.openweathermap.org/data/2.5/forecast?q=' +
                     city +
                     '&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
     return this.http.get(this.dataUrl)

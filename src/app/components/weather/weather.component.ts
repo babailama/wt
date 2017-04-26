@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { WeatherDataService } from '../../services/weather-data/weather-data.service';
 import { WeatherDataInteface } from '../../interfaces/weather-data.interface';
@@ -15,14 +15,19 @@ export class WeatherComponent implements OnInit {
   data: WeatherDataInteface[];
   private weatherData: WeatherDataInteface[];
   gmap: GmapComponent;
+  @Input() cityName;
   city: string;
   lat: number;
   lng: number;
   cities= [
-       {id: '704147', name: 'Kremenchug', lat: 49.0458331, lng: 33.4465606},
+       /*{id: '704147', name: 'Kremenchug', lat: 49.0458331, lng: 33.4465606},
        {id: '696643', name: 'Poltava', lat: 49.5739374, lng: 34.5505306},
        {id: '703448', name: 'Kiev', lat: 50.4021368, lng: 30.2525137},
-       {id: '687700', name: 'Zaporizhzhya', lat: 47.8559028, lng: 35.0352711}
+       {id: '687700', name: 'Zaporizhzhya', lat: 47.8559028, lng: 35.0352711}*/
+       {name: 'Kremenchug', sel: true},
+       {name: 'Poltava', sel: false},
+       {name: 'Kiev', sel: false},
+       {name: 'Zaporizhzhya', sel: false}
      ];
   constructor(private weatherDataService: WeatherDataService) { }
 
@@ -31,18 +36,33 @@ export class WeatherComponent implements OnInit {
         data => this.data = data,
         error =>  this.errorMessage = <any>error
       );
-    for (const i of this.cities) {
-      if (i.id == city) {
-        this.lat = i.lat;
-        this.lng = i.lng;
-      }
-    } 
-    this.gmap.setMap(this.lat, this.lng);
+    this.addCity(city);
   }
 
   ngOnInit() {
-    this.gmap = new GmapComponent();
-    this.getWeatherData('704147');
+    this.getWeatherData('Kremenchug');
+  }
+  onEnter(value: string): void {
+    this.cityName = value;
+    this.addCity(this.cityName);
+    this.getWeatherData(this.cityName);
+  }
+
+  addCity(city: string): number {
+    let f = 0;
+    for (const a of this.cities) {
+      if ( a.name === city ) {
+        f = 1;
+        a.sel = true;
+      } else {
+        a.sel = false;
+      }
+    }
+    if ( f === 0) {
+      const a = {name: this.cityName, sel: true};
+      this.cities.push(a);
+    }
+    return f;
   }
 
 }

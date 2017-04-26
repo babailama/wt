@@ -22,7 +22,6 @@ export class GmapComponent implements OnInit {
             zoom: 9,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-    console.log(this.map);
     this.map = new google.maps.Map(document.getElementById('gmap'), this.mapProp);
   }
 }
