@@ -13,14 +13,7 @@ export class GmapComponent implements OnInit {
   }
 
   ngOnInit() {
-    /**/
-    // this.setMap(44, 33.4);
-    this.mapProp = {
-            center: new google.maps.LatLng(49, 33.4),
-            zoom: 9,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-    this.map = new google.maps.Map(document.getElementById('gmap'), this.mapProp);
+    this.setMap(49, 33.4);
   }
 
   setMap(lat: number, lng: number): void {
@@ -29,8 +22,7 @@ export class GmapComponent implements OnInit {
             zoom: 9,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
+    console.log(this.map);
     this.map = new google.maps.Map(document.getElementById('gmap'), this.mapProp);
-    //this.map.setCenter(this.mapProp);
   }
-
 }

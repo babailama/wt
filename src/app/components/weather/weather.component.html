@@ -4,9 +4,6 @@
   <select (change)="getWeatherData($event.target.value)">
     <option *ngFor="let c of cities" value={{c.id}}>{{c.name}}</option>
    </select>
-  <!-- 703448 kiev 
-       704147 kremen-->
-  
 </p>
 </div>
 <div class="col-md-8"><app-gmap>...</app-gmap></div>
