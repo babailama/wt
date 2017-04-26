@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import {ToolTipModule} from 'angular2-tooltip'
 
 import { AppComponent } from './app.component';
 import { WeatherComponent } from './components/weather/weather.component';
@@ -16,7 +17,8 @@ import { GmapComponent } from './components/gmap/gmap.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    ToolTipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

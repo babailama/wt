@@ -7,7 +7,7 @@
 </p>
 </div>
 <div class="col-md-2">
-	<input type="text" class="form-control input-sm" placeholder="City name" #box (keyup.enter)="onEnter(box.value)">
+	<input type="text" class="form-control input-sm" tooltip content="Enter city name(e.g. Lviv, London, New-York, etc) and press 'Enter' key" placeholder="Enter city name(e.g. Lviv)" #box (keyup.enter)="onEnter(box.value)">
 </div>
 <!-- 
 <div class="col-md-8"><app-gmap>...</app-gmap></div>
