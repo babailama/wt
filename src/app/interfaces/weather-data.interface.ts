@@ -1,7 +1,7 @@
-import { $ } from 'protractor';
 /**
  * New typescript file
  */
+
 import { CloudsInerface } from './clouds.interface';
 import { MainInerface } from './main.interface';
 import { RainInerface } from './rain.interface';

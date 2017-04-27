@@ -1,18 +1,18 @@
-<div class="row">
-<div class="col-md-2">
+<div class="row align-items-start">
+<div class="offset-md-1 col-md-2">
 <p>
   <select class="form-control input-sm" (change)="getWeatherData($event.target.value)">
-    <option *ngFor="let c of cities" value={{c.name}} [selected]="c.sel === true">{{c.name}}  </option>
+    <option *ngFor="let c of citiesFull" value={{c.name}} [selected]="c.sel === true">{{c.name}}  </option>
    </select>
 </p>
 </div>
 <div class="col-md-2">
 	<input type="text" class="form-control input-sm" tooltip content="Enter city name(e.g. Lviv, London, New-York, etc) and press 'Enter' key" placeholder="Enter city name(e.g. Lviv)" #box (keyup.enter)="onEnter(box.value)">
 </div>
-<!-- 
-<div class="col-md-8"><app-gmap>...</app-gmap></div>
+
+<div class="col-md-6"><app-gmap (updateCoord)="getCoordData($event)" [lat]='lat' [lng]='lng' [zoom]='zoom'>...</app-gmap></div>
 </div>
- -->
+
 <table class="table table-striped">
 <thead>
 	<tr>

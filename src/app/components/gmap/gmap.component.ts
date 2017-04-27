@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-declare var google: any;
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import {AgmCoreModule, LatLng, MouseEvent} from 'angular2-google-maps/core';
+// declare var google: any;
 
 @Component({
   selector: 'app-gmap',
@@ -7,21 +8,31 @@ declare var google: any;
   styleUrls: ['./gmap.component.css']
 })
 export class GmapComponent implements OnInit {
-  map: any;
-  mapProp: any;
+  title: string = 'Select city';
+  @Input()
+  lat: number = 49.0458331;
+  @Input()
+  lng: number = 33.4465606;
+  @Input()
+  zoom: number = 7;
+
+  @Output() 
+  updateCoord = new EventEmitter<{lat: number, lng: number}>();
+
   constructor() {
   }
 
   ngOnInit() {
-    this.setMap(49, 33.4);
-  }
 
-  setMap(lat: number, lng: number): void {
-    this.mapProp = {
-            center: new google.maps.LatLng(lat, lng),
-            zoom: 9,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-    this.map = new google.maps.Map(document.getElementById('gmap'), this.mapProp);
+  }
+  mapRightClick(event: MouseEvent) {
+    const lat = event.coords.lat;
+    const lng = event.coords.lng;
+    this.updateCoord.emit({lat, lng});
+  }
+  setPosition(lat: number, lng : number, zoom: number) {
+    this.lat = lat;
+    this.lng = lng;
+    this.zoom = zoom;
   }
 }

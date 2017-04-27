@@ -1,7 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { WeatherDataService } from '../../services/weather-data/weather-data.service';
 import { WeatherDataInteface } from '../../interfaces/weather-data.interface';
+import { CoordInterface } from '../../interfaces/coord.interface';
+import { AllWeatherDataInterface, CityInterface } from '../../interfaces/list.interface';
 import { GmapComponent } from '../gmap/gmap.component';
 
 @Component({
@@ -13,32 +15,75 @@ import { GmapComponent } from '../gmap/gmap.component';
 export class WeatherComponent implements OnInit {
   errorMessage: string;
   data: WeatherDataInteface[];
-  private weatherData: WeatherDataInteface[];
-  gmap: GmapComponent;
+  cityObj: CityInterface;
   @Input() cityName;
   city: string;
-  lat: number;
-  lng: number;
-  cities= [
-       /*{id: '704147', name: 'Kremenchug', lat: 49.0458331, lng: 33.4465606},
-       {id: '696643', name: 'Poltava', lat: 49.5739374, lng: 34.5505306},
-       {id: '703448', name: 'Kiev', lat: 50.4021368, lng: 30.2525137},
-       {id: '687700', name: 'Zaporizhzhya', lat: 47.8559028, lng: 35.0352711}*/
+  lat: number = 49.0458331;
+  lng: number = 33.4465606;
+  zoom: number = 7;
+  citiesFull: CoordInterface[] = [
+       {id: 704147, name: 'Kremenchug', lat: 49.0458331, lng: 33.4465606, sel: true},
+       {id: 696643, name: 'Poltava', lat: 49.5739374, lng: 34.5505306, sel: false},
+       {id: 703448, name: 'Kiev', lat: 50.4021368, lng: 30.2525137, sel: false},
+       {id: 687700, name: 'Zaporizhzhya', lat: 47.8559028, lng: 35.0352711, sel: false}
+       ];
+   cities= [
        {name: 'Kremenchug', sel: true},
        {name: 'Poltava', sel: false},
        {name: 'Kiev', sel: false},
        {name: 'Zaporizhzhya', sel: false}
      ];
   constructor(private weatherDataService: WeatherDataService) { }
-
-  getWeatherData(city): void {
-    this.weatherDataService.getOData(city).subscribe(
-        data => this.data = data,
-        error =>  this.errorMessage = <any>error
+  getCoordData(event) {
+    this.weatherDataService.getCoordData(event.lat, event.lng).subscribe(
+        data => {
+          this.data = data.list;
+          this.cityObj = data.city;
+        },
+        error =>  {
+          this.errorMessage = <any>error;
+          console.log('error', error);
+        }
       );
-    this.addCity(city);
+    if (this.cityObj && this.addCity(this.cityObj.name)) {
+      console.log('if', this.cityObj.name, this.cityObj.coord.lat, this.cityObj.coord.lon);
+      this.cities.push({name: this.cityObj.name, sel: true});
+      this.citiesFull.push({
+        id: this.cityObj.id,
+        name: this.cityObj.name,
+        lat: this.cityObj.coord.lat,
+        lng: this.cityObj.coord.lon,
+        sel: true
+        });
+      this.zoom = 7;
+      this.lat = this.cityObj.coord.lat;
+      this.lng = this.cityObj.coord.lon;
+    }
   }
-
+  getWeatherData(city): void {
+    this.weatherDataService.getCityData(city).subscribe(
+        data => {
+          this.data = data.list;
+          this.cityObj = data.city;
+        },
+        error =>  {
+          this.errorMessage = <any>error;
+          console.log('error', error);
+        },
+        () => {console.log('success');}
+      );
+    if (this.cityObj && this.addCity(this.cityObj.name)) {
+      console.log('if', this.cityObj.name, this.cityObj.coord.lat, this.cityObj.coord.lon);
+      this.cities.push({name: this.cityObj.name, sel: true});
+      this.citiesFull.push({
+        id: this.cityObj.id,
+        name: this.cityObj.name,
+        lat: this.cityObj.coord.lat,
+        lng: this.cityObj.coord.lon,
+        sel: true
+        });
+    }
+  }
   ngOnInit() {
     this.getWeatherData('Kremenchug');
   }
@@ -46,24 +91,32 @@ export class WeatherComponent implements OnInit {
     this.cityName = value;
     this.addCity(this.cityName);
     this.getWeatherData(this.cityName);
+    for (const a of this.citiesFull) {
+      if ( a.name === this.cityName ) {
+        this.zoom = 7;
+        this.lat = a.lat;
+        this.lng = a.lng;
+      }
+    }
   }
-
-  addCity(city: string): number {
-    let f = 0;
+  addCity(city: string): boolean {
+    let f = true;
     for (const a of this.cities) {
       if ( a.name === city ) {
-        f = 1;
         a.sel = true;
       } else {
         a.sel = false;
       }
     }
-    if ( f === 0) {
-      const a = {name: this.cityName, sel: true};
-      this.cities.push(a);
+    for (const a of this.citiesFull) {
+      if ( a.name === city ) {
+        f = false;
+        a.sel = true;
+      } else {
+        a.sel = false;
+      }
     }
     return f;
   }
-
 }
 

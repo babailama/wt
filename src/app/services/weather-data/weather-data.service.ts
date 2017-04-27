@@ -6,17 +6,27 @@ import 'rxjs/add/operator/map';
 
 
 import { WeatherDataInteface } from '../../interfaces/weather-data.interface';
+import { AllWeatherDataInterface } from '../../interfaces/list.interface';
 @Injectable()
 export class WeatherDataService {
-  private dataUrl: string;
+  private part1Url: string = 'http://api.openweathermap.org/data/2.5/forecast?';
+  private part2Url: string = '&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
+//  private dataUrl: string;
   //  'http://api.openweathermap.org/data/2.5/forecast?id=704147&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
   constructor(private http: Http) { }
+  
+  getCoordData(lat: number, lng: number) :  Observable<AllWeatherDataInterface> {
+    const dataUrl=this.part1Url+'lat='+lat+'&lon='+lng+this.part2Url;
+    return this.getOData(dataUrl);
+  }
 
-  getOData(city : string):  Observable<WeatherDataInteface[]> {
-    this.dataUrl = 'http://api.openweathermap.org/data/2.5/forecast?q=' +
-                    city +
-                    '&units=metric&lang=ua&appid=baa60cc7d33e8acf323299e46cc18a7a';
-    return this.http.get(this.dataUrl)
+  getCityData(city: string) :  Observable<AllWeatherDataInterface> {
+    const dataUrl=this.part1Url+'q='+city+this.part2Url;
+    return this.getOData(dataUrl);
+  }
+
+  getOData(url : string):  Observable<AllWeatherDataInterface> {
+    return this.http.get(url)
                     .map(this.extractData)
                     .catch(this.handleError);
   }
@@ -25,7 +35,7 @@ export class WeatherDataService {
     for (const item of body.list) {
       item.dt = item.dt * 1000;
     }
-    return body.list || { };
+    return {city: body.city, list:body.list} || { };
   }
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
