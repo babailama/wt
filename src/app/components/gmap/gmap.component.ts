@@ -8,7 +8,7 @@ import {AgmCoreModule, LatLng, MouseEvent} from 'angular2-google-maps/core';
   styleUrls: ['./gmap.component.css']
 })
 export class GmapComponent implements OnInit {
-  title: string = 'Select city';
+  title: string = 'Select city and rigth click on it';
   @Input()
   lat: number = 49.0458331;
   @Input()

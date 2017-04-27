@@ -22,18 +22,17 @@ export class WeatherComponent implements OnInit {
   lng: number = 33.4465606;
   zoom: number = 7;
   citiesFull: CoordInterface[] = [
-       {id: 704147, name: 'Kremenchug', lat: 49.0458331, lng: 33.4465606, sel: true},
+       {id: 704147, name: 'Kremenchuk', lat: 49.0458331, lng: 33.4465606, sel: true},
        {id: 696643, name: 'Poltava', lat: 49.5739374, lng: 34.5505306, sel: false},
        {id: 703448, name: 'Kiev', lat: 50.4021368, lng: 30.2525137, sel: false},
        {id: 687700, name: 'Zaporizhzhya', lat: 47.8559028, lng: 35.0352711, sel: false}
        ];
-   cities= [
-       {name: 'Kremenchug', sel: true},
-       {name: 'Poltava', sel: false},
-       {name: 'Kiev', sel: false},
-       {name: 'Zaporizhzhya', sel: false}
-     ];
   constructor(private weatherDataService: WeatherDataService) { }
+  gotoPlace(lat: number, lng: number, zoom: number) {
+      this.zoom = zoom;
+      this.lat = lat;
+      this.lng = lng;
+  }
   getCoordData(event) {
     this.weatherDataService.getCoordData(event.lat, event.lng).subscribe(
         data => {
@@ -43,22 +42,15 @@ export class WeatherComponent implements OnInit {
         error =>  {
           this.errorMessage = <any>error;
           console.log('error', error);
+        },
+        () => {
+          this.gotoPlace(this.cityObj.coord.lat, this.cityObj.coord.lon, 7);
+          if (!this.findCity(this.cityObj.name)) {
+            this.citiesFull.push({id: this.cityObj.id, name: this.cityObj.name, lat: this.cityObj.coord.lat,
+              lng: this.cityObj.coord.lon, sel: true});
+          }
         }
       );
-    if (this.cityObj && this.addCity(this.cityObj.name)) {
-      console.log('if', this.cityObj.name, this.cityObj.coord.lat, this.cityObj.coord.lon);
-      this.cities.push({name: this.cityObj.name, sel: true});
-      this.citiesFull.push({
-        id: this.cityObj.id,
-        name: this.cityObj.name,
-        lat: this.cityObj.coord.lat,
-        lng: this.cityObj.coord.lon,
-        sel: true
-        });
-      this.zoom = 7;
-      this.lat = this.cityObj.coord.lat;
-      this.lng = this.cityObj.coord.lon;
-    }
   }
   getWeatherData(city): void {
     this.weatherDataService.getCityData(city).subscribe(
@@ -70,53 +62,32 @@ export class WeatherComponent implements OnInit {
           this.errorMessage = <any>error;
           console.log('error', error);
         },
-        () => {console.log('success');}
+        () => {
+          this.gotoPlace(this.cityObj.coord.lat,this.cityObj.coord.lon, 7);
+          if (!this.findCity(this.cityObj.name)) {
+            this.citiesFull.push({id: this.cityObj.id, name: this.cityObj.name,
+              lat: this.cityObj.coord.lat, lng: this.cityObj.coord.lon, sel: true});
+          }
+        }
       );
-    if (this.cityObj && this.addCity(this.cityObj.name)) {
-      console.log('if', this.cityObj.name, this.cityObj.coord.lat, this.cityObj.coord.lon);
-      this.cities.push({name: this.cityObj.name, sel: true});
-      this.citiesFull.push({
-        id: this.cityObj.id,
-        name: this.cityObj.name,
-        lat: this.cityObj.coord.lat,
-        lng: this.cityObj.coord.lon,
-        sel: true
-        });
-    }
   }
   ngOnInit() {
-    this.getWeatherData('Kremenchug');
+    this.getWeatherData('Kremenchuk');
   }
   onEnter(value: string): void {
     this.cityName = value;
-    this.addCity(this.cityName);
     this.getWeatherData(this.cityName);
-    for (const a of this.citiesFull) {
-      if ( a.name === this.cityName ) {
-        this.zoom = 7;
-        this.lat = a.lat;
-        this.lng = a.lng;
-      }
+    this.gotoPlace(this.cityObj.coord.lat, this.cityObj.coord.lon, 7);
     }
-  }
-  addCity(city: string): boolean {
-    let f = true;
-    for (const a of this.cities) {
-      if ( a.name === city ) {
-        a.sel = true;
-      } else {
-        a.sel = false;
-      }
-    }
+
+  findCity(city: string): boolean {
     for (const a of this.citiesFull) {
       if ( a.name === city ) {
-        f = false;
-        a.sel = true;
-      } else {
-        a.sel = false;
+        return true;
       }
     }
-    return f;
+    return false;
   }
 }
+
 
